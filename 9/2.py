@@ -13,9 +13,9 @@ class Exercise9:
 
     def __init__(self):
         self.step_list = ["0:0"]
-        self.last_postition = [[0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0]]
+        self.last_postition = [[0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0]]
         self.head_tails = [[0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0]]
-        self.count = 0
+        self.count = 1
         self.extract_data()
 
     def extract_data(self) -> None:
@@ -49,40 +49,44 @@ class Exercise9:
         # self.data = requests.get(
         #     'https://adventofcode.com/2022/day/9/input', cookies=cookies, headers=headers
         # ).text.strip().split('\n')
-        self.data = open('data.txt', 'r').readlines()
+        self.data = open('data2.txt', 'r').readlines()
 
-    def actualize_tail(self) -> None:
-        x_axis = int(self.head[0]) - int(self.tail[0])
-        y_axis = int(self.head[1]) - int(self.tail[1])
-        if x_axis > 1 or x_axis < -1 or y_axis > 1 or y_axis < -1:
-            self.tail = self.last_postition.copy()
-            new_pos = str(self.tail[0]) + ":" + str(self.tail[1])
-            if new_pos not in self.step_list:
-                self.count += 1
-                self.step_list.append(new_pos)
-        self.last_postition = self.head.copy()
+    def actualize_tails(self) -> None:
+        for x in range(1, 10):
+            x_axis = int(self.head_tails[x-1][0] - int(self.head_tails[x][0]))
+            y_axis = int(int(self.head_tails[x-1][1] - self.head_tails[x][1]))
+
+            if x_axis + y_axis > 1 or x_axis + y_axis < -1:
+                self.head_tails[x] = self.last_postition[x - 1].copy()
+                new_pos = str(self.head_tails[x][0]) + ":" + str(self.head_tails[x][1])
+                if new_pos not in self.step_list and x == 9:
+                    self.count += 1
+                    self.step_list.append(new_pos)
+            self.last_postition[x-1] = self.head_tails[x-1].copy()
 
     def move_steps_direction(self, steps, element, decrease=False):
         for x in range(0, steps):
             if not decrease:
-                self.head[element] += 1
+                self.head_tails[0][element] += 1
             else:
-                self.head[element] -= 1
-            self.actualize_tail()
+                self.head_tails[0][element] -= 1
+            self.actualize_tails()
+
 
     def move_positions(self) -> None:
         for x in self.data:
             if x is not None:
                 command, steps = x.strip().split(' ')
                 if 'R' in str(command).upper():
-                    self.move_steps_direction(int(steps), 0)
-                elif 'L' in str(command).upper():
-                    self.move_steps_direction(int(steps), 0, True)
-                elif 'U' in str(command).upper():
                     self.move_steps_direction(int(steps), 1)
-                else:
+                elif 'L' in str(command).upper():
                     self.move_steps_direction(int(steps), 1, True)
-        print(self.count)
+                elif 'U' in str(command).upper():
+                    self.move_steps_direction(int(steps), 0)
+                else:
+                    self.move_steps_direction(int(steps), 0, True)
+        print(self.count+1)
+
 
 Exercise9 = Exercise9()
 
