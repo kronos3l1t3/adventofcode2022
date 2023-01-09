@@ -57,25 +57,20 @@ class Exercise8:
         return True
 
     def counter(self, len_matrix: int, line: int = 0) -> None:
-        if line == 0 or line == len(self.matrix):
-            for item in range(0, len_matrix+1):
-                if self.matrix[line][item] != 1:
+        if self.matrix[line][0] != 1:
+            self.count += 1
+        if self.matrix[line][len_matrix] != 1:
+            self.count += 1
+        self.matrix[line][0] = 1
+        self.matrix[line][len_matrix] = 1
+        for item in range(1, len_matrix):
+            if self.matrix[line][item] != 1:
+                sub_list_1 = self.matrix_copy[line][0:item]
+                sub_list_2 = self.matrix_copy[line][item + 1: len_matrix + 1]
+                if self.seek_bigger_than(self.matrix_copy[line][item], sub_list_1) or self.seek_bigger_than(
+                        self.matrix_copy[line][item], sub_list_2):
                     self.count += 1
-                self.matrix[line][item] = 1
-        else:
-            if self.matrix[line][0] != 1:
-                self.count += 1
-            if self.matrix[line][len_matrix] != 1:
-                self.count += 1
-            self.matrix[line][0] = 1
-            self.matrix[line][len_matrix] = 1
-            for item in range(1, len_matrix):
-                if self.matrix[line][item] != 1:
-                    sub_list_1 = self.matrix_copy[line][0:item]
-                    sub_list_2 = self.matrix_copy[line][item + 1: len_matrix + 1]
-                    if self.seek_bigger_than(self.matrix_copy[line][item], sub_list_1) or self.seek_bigger_than(self.matrix_copy[line][item], sub_list_2):
-                        self.count += 1
-                        self.matrix[line][item] = 1
+                    self.matrix[line][item] = 1
 
     def counter_matrix(self) -> None:
         line = 0
